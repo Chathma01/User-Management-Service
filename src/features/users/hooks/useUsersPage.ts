@@ -1,7 +1,7 @@
 // src/features/users/hooks/useUsersPage.ts
 "use client";
 
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -9,6 +9,7 @@ import { logout } from "@/features/auth/authSlice";
 import {
   fetchUsersThunk,
 } from "@/features/users/usersThunks";
+import { setPage, setPageSize, setSearch } from "../usersSlice";
 
 export function useUsersPage() {
   const router = useRouter();
@@ -20,11 +21,36 @@ export function useUsersPage() {
 
   // Users state
   const {
+    items,
+    total,
+    loading,
+    error,
+    saving,
+    saveError,
     page,
     pageSize,
     search,
-    status
-  } = useAppSelector((s) => s.users);
+    status,
+  } = useAppSelector(
+    (state) => state.users
+  );
+
+  const [searchInput, setSearchInput] = useState(search);
+  const [createOpen, setCreateOpen] = useState(false);
+
+    // Keep search input in sync with Redux value
+  useEffect(() => {
+    setSearchInput(search);
+  }, [search]);
+
+  // Debounced search dispatch
+  useEffect(() => {
+    const id = setTimeout(() => {
+      dispatch(setSearch(searchInput.trim()));
+    }, 400);
+
+    return () => clearTimeout(id);
+  }, [dispatch, searchInput]);
 
   // Route protection after hydration
   useEffect(() => {
@@ -56,13 +82,31 @@ export function useUsersPage() {
     dispatch(fetchUsersThunk(buildQuery()));
   }, [accessToken, dispatch, buildQuery]);
 
+  const openCreate = useCallback(() => setCreateOpen(true), []);
+  const closeCreate = useCallback(() => setCreateOpen(false), []);
+
+  const changePage = useCallback((p: number) => dispatch(setPage(p)), [dispatch]);
+  const changePageSize = useCallback((s: number) => dispatch(setPageSize(s)), [dispatch]);
   const doLogout = useCallback(() => dispatch(logout()), [dispatch]);
 
   return {
     accessToken,
+    items,
+    total,
+    loading,
+    error,
+    saving,
+    saveError,
     page,
     pageSize,
     status,
-    doLogout
+    searchInput,
+    setSearchInput,
+    changePage,
+    changePageSize,
+    openCreate,
+    doLogout,
+    createOpen,
+    closeCreate,
   };
 }

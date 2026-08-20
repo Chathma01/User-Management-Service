@@ -4,10 +4,6 @@ import type { RootState } from "@/store/store";
 import type {
   FetchUsersParams,
   FetchUsersResponse,
-//   CreateUserRequest,
-//   UpdateUserRequest,
-//   ToggleUserStatusRequest,
-//   User,
 } from "./usersTypes";
 
 import * as usersApi from "./userApi";
