@@ -16,6 +16,7 @@ import UsersTable from "@/features/users/components/UsersTable";
 import UsersPagination from "@/features/users/components/UsersPagination";
 
 import { useUsersPage } from "@/features/users/hooks/useUsersPage";
+import UserFormDialog from "./components/UserFormDialog";
 
 export default function UsersPage() {
   const vm = useUsersPage();
@@ -90,6 +91,11 @@ export default function UsersPage() {
           </Box>
         ) : (
           <>
+            <UsersTable
+              users={vm.items}
+              saving={vm.saving}
+              onEdit={vm.openEdit}
+            />
 
             <UsersPagination
               total={vm.total}
@@ -101,6 +107,27 @@ export default function UsersPage() {
           </>
         )}
       </Paper>
+
+      {/* Create */}
+      <UserFormDialog
+        open={vm.createOpen}
+        title="Create User"
+        onClose={vm.closeCreate}
+        onSubmit={vm.submitCreate}
+        submitting={vm.saving}
+        error={vm.saveError}
+      />
+
+      {/* Edit */}
+      <UserFormDialog
+        open={vm.editOpen}
+        title="Edit User"
+        initialValues={vm.editInitial}
+        onClose={vm.closeEdit}
+        onSubmit={vm.submitEdit}
+        submitting={vm.saving}
+        error={vm.saveError}
+      />
     </Container>
   );
 }

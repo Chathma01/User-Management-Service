@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { User, UserStatus } from "./usersTypes";
-import { fetchUsersThunk } from "./usersThunks";
+import { createUserThunk, fetchUsersThunk, updateUserThunk } from "./usersThunks";
 
 export type UsersState = {
     items: User[];
@@ -68,6 +68,38 @@ const usersSlice = createSlice({
             .addCase(fetchUsersThunk.rejected, (state, action) => {
                 state.loading = false;
                 state.error = action.payload ?? "Failed to load users";
+            })
+
+            // Create User
+            .addCase(createUserThunk.pending, (state) => {
+                state.saving = true;
+                state.saveError = null;
+            })
+            .addCase(createUserThunk.fulfilled, (state) => {
+                state.saving = false;
+                state.saveError = null;
+            })
+            .addCase(createUserThunk.rejected, (state, action) => {
+                state.saving = false;
+                state.saveError = action.payload ?? "Create user failed";
+            })
+            
+            // Update User
+            .addCase(updateUserThunk.pending, (state) => {
+                state.saving = true;
+                state.saveError = null;
+            })
+            .addCase(updateUserThunk.fulfilled, (state, action) => {
+                state.saving = false;
+                state.saveError = null;
+
+                const updated = action.payload;
+                const idx = state.items.findIndex((u) => u.id === updated.id);
+                if (idx !== -1) state.items[idx] = updated;
+            })
+            .addCase(updateUserThunk.rejected, (state, action) => {
+                state.saving = false;
+                state.saveError = action.payload ?? "Update user failed";
             })
 
         },

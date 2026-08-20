@@ -39,3 +39,10 @@ export type FetchUsersResponse = {
   total: number;
   items: User[];
 };
+
+export type CreateUserRequest = UserUpsertPayload;
+
+export type UpdateUserRequest = {
+  employee_id: string;
+  data: UserUpsertPayload;
+};

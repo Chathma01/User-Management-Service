@@ -2,8 +2,11 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import type { RootState } from "@/store/store";
 import type {
+    CreateUserRequest,
   FetchUsersParams,
   FetchUsersResponse,
+  UpdateUserRequest,
+  User,
 } from "./usersTypes";
 
 import * as usersApi from "./userApi";
@@ -39,6 +42,32 @@ export const fetchUsersThunk = createAsyncThunk<
   try {
     const token = requireToken(thunkApi.getState());
     return await usersApi.fetchUsers(params, token);
+  } catch (err) {
+    return thunkApi.rejectWithValue(toUsersErrorMessage(err));
+  }
+});
+
+export const createUserThunk = createAsyncThunk<
+  User,
+  CreateUserRequest,
+  { state: RootState; rejectValue: string }
+>("users/createUser", async (payload, thunkApi) => {
+  try {
+    const token = requireToken(thunkApi.getState());
+    return await usersApi.createUser(payload, token);
+  } catch (err) {
+    return thunkApi.rejectWithValue(toUsersErrorMessage(err));
+  }
+});
+
+export const updateUserThunk = createAsyncThunk<
+  User,
+  UpdateUserRequest,
+  { state: RootState; rejectValue: string }
+>("users/updateUser", async (req, thunkApi) => {
+  try {
+    const token = requireToken(thunkApi.getState());
+    return await usersApi.updateUser(req, token);
   } catch (err) {
     return thunkApi.rejectWithValue(toUsersErrorMessage(err));
   }
