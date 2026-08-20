@@ -17,6 +17,7 @@ import UsersPagination from "@/features/users/components/UsersPagination";
 
 import { useUsersPage } from "@/features/users/hooks/useUsersPage";
 import UserFormDialog from "./components/UserFormDialog";
+import ConfirmDialog from "./components/ConfirmDialog";
 
 export default function UsersPage() {
   const vm = useUsersPage();
@@ -67,9 +68,6 @@ export default function UsersPage() {
             >
               User Directory
             </Typography>
-            <Typography variant="body2" color="text.secondary">
-              Search, manage, and update employee records.
-            </Typography>
           </Box>
 
           <Typography variant="body2" color="text.secondary">
@@ -94,6 +92,7 @@ export default function UsersPage() {
             <UsersTable
               users={vm.items}
               saving={vm.saving}
+              onToggleStatus={vm.openConfirmToggle}
               onEdit={vm.openEdit}
             />
 
@@ -127,6 +126,17 @@ export default function UsersPage() {
         onSubmit={vm.submitEdit}
         submitting={vm.saving}
         error={vm.saveError}
+      />
+
+      {/* Confirm activate/deactivate */}
+      <ConfirmDialog
+        open={vm.confirmOpen}
+        title={vm.confirmTitle}
+        message={vm.confirmMessage}
+        confirmLabel={vm.confirmLabel}
+        loading={vm.saving}
+        onClose={vm.closeConfirm}
+        onConfirm={vm.confirmToggle}
       />
     </Container>
   );

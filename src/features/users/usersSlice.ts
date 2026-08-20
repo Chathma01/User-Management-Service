@@ -1,6 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import type { User, UserStatus } from "./usersTypes";
-import { createUserThunk, fetchUsersThunk, updateUserThunk } from "./usersThunks";
+import { createUserThunk, fetchUsersThunk, toggleUserStatusThunk, updateUserThunk } from "./usersThunks";
 
 export type UsersState = {
     items: User[];
@@ -101,6 +101,24 @@ const usersSlice = createSlice({
                 state.saving = false;
                 state.saveError = action.payload ?? "Update user failed";
             })
+
+            // Toggle status
+            .addCase(toggleUserStatusThunk.pending, (state) => {
+                state.saving = true;
+                state.saveError = null;
+            })
+            .addCase(toggleUserStatusThunk.fulfilled, (state, action) => {
+                state.saving = false;
+                state.saveError = null;
+
+                const updated = action.payload;
+                const idx = state.items.findIndex((u) => u.id === updated.id);
+                if (idx !== -1) state.items[idx] = updated;
+            })
+            .addCase(toggleUserStatusThunk.rejected, (state, action) => {
+                state.saving = false;
+                state.saveError = action.payload ?? "Status update failed";
+            });
 
         },
 });

@@ -5,6 +5,7 @@ import type {
     CreateUserRequest,
   FetchUsersParams,
   FetchUsersResponse,
+  ToggleUserStatusRequest,
   UpdateUserRequest,
   User,
 } from "./usersTypes";
@@ -68,6 +69,19 @@ export const updateUserThunk = createAsyncThunk<
   try {
     const token = requireToken(thunkApi.getState());
     return await usersApi.updateUser(req, token);
+  } catch (err) {
+    return thunkApi.rejectWithValue(toUsersErrorMessage(err));
+  }
+});
+
+export const toggleUserStatusThunk = createAsyncThunk<
+  User,
+  ToggleUserStatusRequest,
+  { state: RootState; rejectValue: string }
+>("users/toggleStatus", async (req, thunkApi) => {
+  try {
+    const token = requireToken(thunkApi.getState());
+    return await usersApi.toggleUserStatus(req, token);
   } catch (err) {
     return thunkApi.rejectWithValue(toUsersErrorMessage(err));
   }

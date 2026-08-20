@@ -3,6 +3,7 @@ import type {
     CreateUserRequest,
   FetchUsersParams,
   FetchUsersResponse,
+  ToggleUserStatusRequest,
   UpdateUserRequest,
   User,
 } from "./usersTypes";
@@ -35,5 +36,15 @@ export function updateUser(req: UpdateUserRequest, token: string) {
     method: "PUT",
     token,
     body: req.data,
+  });
+}
+
+export function toggleUserStatus(req: ToggleUserStatusRequest, token: string) {
+  const action = req.nextStatus === "active" ? "activate" : "deactivate";
+
+  return apiRequest<User>({
+    path: `/api/v1/employees/${req.employee_id}/${action}`,
+    method: "PATCH",
+    token,
   });
 }

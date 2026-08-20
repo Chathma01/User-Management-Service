@@ -20,7 +20,7 @@ export default function UsersSearch({ value, onChange }: Props) {
       <TextField
         value={value}
         onChange={(e) => onChange(e.target.value)}
-        placeholder="Try name, email, employee code..."
+        placeholder="Search by name/employee code/e-mail"
         fullWidth
         sx={{
           "& .MuiOutlinedInput-root": {

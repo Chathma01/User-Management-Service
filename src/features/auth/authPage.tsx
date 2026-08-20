@@ -26,80 +26,101 @@ export default function AuthPage() {
     <Box
       sx={{
         minHeight: "100vh",
-        display: "grid",
-        gridTemplateColumns: { xs: "1fr", md: "1.3fr 0.7fr" },
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        overflow: "hidden",
+        px: 2,
+        py: 4,
+        backgroundImage:
+          "url('https://images.unsplash.com/photo-1645470112452-277c99f78040?q=80&w=1920&auto=format&fit=crop')",
+        backgroundSize: "cover",
+        backgroundPosition: "center",
+        backgroundRepeat: "no-repeat",
       }}
     >
-      {/* Visual panel (desktop only) */}
+      {/* Background overlay */}
       <Box
         sx={{
-          display: { xs: "none", md: "block" },
-          position: "relative",
-          backgroundImage:
-            "url(https://images.unsplash.com/photo-1541701494587-cb58502866ab?auto=format&fit=crop&w=1600&q=80)",
-          backgroundSize: "cover",
-          backgroundPosition: "center",
+          position: "absolute",
+          inset: 0,
+          background:
+            "linear-gradient(135deg, rgba(4,24,42,0.74) 0%, rgba(9,53,76,0.42) 45%, rgba(74,20,40,0.48) 100%)",
+        }}
+      />
+
+      {/* Portal title */}
+      <Box
+        sx={{
+          position: "absolute",
+          top: { xs: 28, md: 40 },
+          left: { xs: 24, md: 48 },
+          right: { xs: 24, md: "auto" },
+          zIndex: 1,
+          color: "#fff",
         }}
       >
-        <Box
+        <Typography
+          variant="h4"
           sx={{
-            position: "absolute",
-            inset: 0,
-            background:
-              "linear-gradient(120deg, rgba(48,54,79,0.65), rgba(48,54,79,0.15))",
-          }}
-        />
-
-        <Box
-          sx={{
-            position: "absolute",
-            bottom: 32,
-            left: 32,
-            p: 3.5,
-            maxWidth: 720,
-            borderRadius: 4,
-            color: "white",
-            backdropFilter: "blur(14px)",
-            backgroundColor: "rgba(255,255,255,0.12)",
-            border: "1px solid rgba(255,255,255,0.25)",
+            fontWeight: 800,
+            letterSpacing: "-0.03em",
+            textShadow: "0 2px 18px rgba(0,0,0,0.35)",
           }}
         >
-          <Typography variant="h4" sx={{ fontWeight: 800, mb: 1 }}>
-            User Management Portal
-          </Typography>
-          <Typography variant="body1" sx={{ opacity: 0.9 }}>
-            Secure authentication with OTP verification.
-          </Typography>
-        </Box>
+          User Management Portal
+        </Typography>
       </Box>
 
-      {/* Authentication panel */}
-      <Box
+      {/* Centered authentication panel */}
+      <Paper
+        elevation={0}
         sx={{
+          position: "relative",
+          zIndex: 1,
+          width: "100%",
+          maxWidth: 420,
+          minHeight: 420,
+          p: { xs: 3.5, sm: 5 },
+          borderRadius: 5,
           display: "flex",
           alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "background.default",
-          px: 2,
+          color: "#10283a",
+          backgroundColor: "rgba(247, 251, 255, 0.9)",
+          border: "1px solid rgba(255,255,255,0.5)",
+          backdropFilter: "blur(18px)",
+          WebkitBackdropFilter: "blur(18px)",
+          boxShadow:
+            "0 24px 70px rgba(0, 20, 38, 0.35), 0 4px 18px rgba(218, 54, 45, 0.12)",
+
+          "& .MuiTypography-root": {
+            color: "#10283a",
+          },
+          "& .MuiInputLabel-root": {
+            color: "#31556c",
+          },
+          "& .MuiOutlinedInput-root": {
+            color: "#10283a",
+            borderRadius: 3,
+            backgroundColor: "rgba(225, 240, 248, 0.72)",
+
+            "& fieldset": {
+              borderColor: "rgba(19, 95, 127, 0.24)",
+            },
+            "&:hover fieldset": {
+              borderColor: "#14799a",
+            },
+            "&.Mui-focused fieldset": {
+              borderColor: "#e05235",
+            },
+          },
         }}
       >
-        <Paper
-          elevation={0}
-          sx={{
-            width: "100%",
-            maxWidth: 420,
-            minHeight: 420,
-            p: 5,
-            borderRadius: 5,
-            display: "flex",
-            alignItems: "center",
-          }}
-        >
-          <Box sx={{ width: "100%" }}>
-            {auth.pendingToken ? <OtpForm /> : <LoginForm />}
-          </Box>
-        </Paper>
-      </Box>
+        <Box sx={{ width: "100%" }}>
+          {auth.pendingToken ? <OtpForm /> : <LoginForm />}
+        </Box>
+      </Paper>
     </Box>
   );
 }

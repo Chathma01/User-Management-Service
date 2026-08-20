@@ -1,7 +1,7 @@
 // src/features/users/hooks/useUsersPage.ts
 "use client";
 
-import { useEffect, useCallback, useState } from "react";
+import { useEffect, useCallback, useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
 
 import { useAppDispatch, useAppSelector } from "@/store/hooks";
@@ -9,10 +9,12 @@ import { logout } from "@/features/auth/authSlice";
 import {
   createUserThunk,
   fetchUsersThunk,
+  toggleUserStatusThunk,
   updateUserThunk,
 } from "@/features/users/usersThunks";
 import { setPage, setPageSize, setSearch } from "../usersSlice";
 import { User, UserStatus, UserUpsertPayload } from "../usersTypes";
+import { buildConfirmCopy } from "../usersUiText";
 
 type EditState = {
   open: boolean;
@@ -179,13 +181,45 @@ export function useUsersPage() {
     [dispatch, edit.id, closeEdit, refetch]
   );
 
+    // Activate / deactivate confirmation
+  const openConfirmToggle = useCallback((userId: string, current: UserStatus) => {
+    setConfirm({ open: true, userId, currentStatus: current });
+  }, []);
+
+  const closeConfirm = useCallback(() => {
+    setConfirm({ open: false, userId: null, currentStatus: null });
+  }, []);
+
+  const confirmUser = useMemo(() => {
+    if (!confirm.userId) return null;
+    return items.find((u) => u.id === confirm.userId) ?? null;
+  }, [confirm.userId, items]);
+
+  const { title: confirmTitle, message: confirmMessage, label: confirmLabel } = buildConfirmCopy(confirmUser, confirm.currentStatus);
+
+  const confirmToggle = useCallback(async () => {
+    if (!confirm.userId || !confirm.currentStatus) return;
+
+    const nextStatus: UserStatus =
+      confirm.currentStatus === "active" ? "inactive" : "active";
+
+    const result = await dispatch(
+      toggleUserStatusThunk({ employee_id: confirm.userId, nextStatus })
+    );
+
+    if (toggleUserStatusThunk.fulfilled.match(result)) {
+      closeConfirm();
+      refetch();
+    }
+  }, [confirm.userId, confirm.currentStatus, dispatch, closeConfirm, refetch]);
+
+
   const changePage = useCallback((p: number) => dispatch(setPage(p)), [dispatch]);
   const changePageSize = useCallback((s: number) => dispatch(setPageSize(s)), [dispatch]);
   const doLogout = useCallback(() => dispatch(logout()), [dispatch]);
 
   return {
     accessToken,
-
     items,
     total,
     loading,
@@ -195,24 +229,26 @@ export function useUsersPage() {
     page,
     pageSize,
     status,
-
     searchInput,
     setSearchInput,
-
     changePage,
     changePageSize,
-
     openCreate,
     doLogout,
-
     createOpen,
     closeCreate,
     submitCreate,
-
     editOpen: edit.open,
     editInitial: edit.initial,
     closeEdit,
     submitEdit,
     openEdit,
+    confirmOpen: confirm.open,
+    openConfirmToggle,
+    closeConfirm,
+    confirmTitle,
+    confirmMessage,
+    confirmLabel,
+    confirmToggle,
   };
 }

@@ -13,17 +13,19 @@ import {
 import type { User, UserStatus } from "../usersTypes";
 import EditOutlinedIcon from "@mui/icons-material/EditOutlined";
 
-
 type Props = {
   users: User[];
   saving: boolean;
   onEdit: (user: User) => void;
+  onToggleStatus: (userId: string, status: UserStatus) => void;
+
 };
 
 export default function UsersTable({
   users,
   saving,
   onEdit,
+  onToggleStatus,
 }: Props) {
   return (
     <Box sx={{ overflowX: "auto" }}>
@@ -104,6 +106,7 @@ export default function UsersTable({
                         size="small"
                         variant="outlined"
                         disabled={saving}
+                        onClick={() => onToggleStatus(u.id, u.status)}
                         sx={{
                           minWidth: 92, // SAME width
                           fontWeight: 700,

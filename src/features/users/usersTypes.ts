@@ -46,3 +46,8 @@ export type UpdateUserRequest = {
   employee_id: string;
   data: UserUpsertPayload;
 };
+
+export type ToggleUserStatusRequest = {
+  employee_id: string;
+  nextStatus: UserStatus;
+};
