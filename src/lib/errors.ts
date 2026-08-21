@@ -1,4 +1,3 @@
-// src/lib/errors.ts
 import type { ApiError } from "./api";
 
 export const ApiErrors = {
@@ -17,12 +16,11 @@ export function mapApiError(err: unknown): { status?: number; message: string } 
   if (!err || typeof err !== "object") return { message: ApiErrors.UNKNOWN };
   const e = err as ApiError;
 
-  // network-ish
+  // network
   if (e.message === "NETWORK_ERROR" || e.status === 0) {
     return { status: e.status, message: ApiErrors.NETWORK };
   }
 
-  // if api.ts already produced a nice message, use it
   if (typeof e.message === "string" && e.message.trim()) {
     return { status: e.status, message: e.message };
   }

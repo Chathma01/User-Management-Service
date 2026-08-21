@@ -5,7 +5,6 @@ export function buildConfirmCopy(user: User | null, current: UserStatus | null) 
 
   const action = current === "active" ? "Inactivate" : "Activate";
   const fullName = user ? `${user.first_name} ${user.last_name}`.trim() : "this user";
-  const email = user?.email ? ` (${user.email})` : "";
 
   return {
     title: `${action} user?`,

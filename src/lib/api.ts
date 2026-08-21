@@ -1,8 +1,8 @@
 // src/lib/api.ts
 export type ApiError = {
   status?: number;
-  message?: string; // already user-friendly (after parsing)
-  raw?: unknown;    // keep raw for debugging if needed
+  message?: string; 
+  raw?: unknown;  
 };
 
 function getBaseUrl() {
@@ -15,7 +15,6 @@ function getBaseUrl() {
 
 function buildValidationMessage(detail: any): string | null {
   // FastAPI validation format:
-  // { detail: [ { loc: ["body","password"], msg: "...", type: "..." }, ... ] }
   if (!Array.isArray(detail) || detail.length === 0) return null;
 
   const first = detail[0];
@@ -25,7 +24,6 @@ function buildValidationMessage(detail: any): string | null {
 
   if (!msg) return null;
 
-  // nice field label
   const fieldLabel =
     typeof field === "string"
       ? field
@@ -33,8 +31,7 @@ function buildValidationMessage(detail: any): string | null {
           .replace(/\b\w/g, (c) => c.toUpperCase()) // Title Case
       : "Field";
 
-  // Examples:
-  // "String should have at least 6 characters" => "Password must have at least 6 characters."
+  
   return `${fieldLabel}: ${msg}`;
 }
 

@@ -19,7 +19,7 @@ export default function FormDateField({ label, value, onChange, onBlur }: Props)
         onChange={(e) => onChange(e.target.value)}
         onBlur={onBlur}
         fullWidth
-        InputLabelProps={{ shrink: true }}
+        slotProps={{inputLabel: {shrink: true},}}
       />
     </Field>
   );
